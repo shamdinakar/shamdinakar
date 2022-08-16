@@ -17,7 +17,7 @@ jobs:
         id: check_file_changed
         run: |
           $Branch = git branch --show-current
-          $Diff = git diff --name-only main...$Branch | grep -v '.github/*'  
+          $Diff = git diff --name-only main...dev | grep -v '.github/*'  
           $HasChanges = $Diff.Length -gt 0
           # Set the output named "docs_changed"
           echo "::set-output name=changes::$HasChanges"
