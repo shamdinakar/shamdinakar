@@ -1,0 +1,30 @@
+name: conditional job
+on:
+  push:
+
+jobs:
+  conditional_job_check_files:
+    runs-on: 'ubuntu-latest'
+    # Declare outputs for next jobs
+    outputs:
+      docs_changed: ${{ steps.check_file_changed.outputs.docs_changed }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          # Checkout as many commits as needed for the diff
+          fetch-depth: 2
+      - shell: pwsh
+        id: check_file_changed
+        run: |
+          $Diff = git diff --name-only main...DX-491-PR-Workflow | grep -v '.github/*'  
+          $HasChanges = $Diff.Length -gt 0
+          # Set the output named "docs_changed"
+          echo "::set-output name=changes::$HasChanges""
+  # Run the job only with "docs_changed" equals "True"
+  conditional_job:
+    runs-on: 'ubuntu-20.04'
+    needs: [conditional_job_check_files]
+    if: needs.conditional_job_check_files.outputs.docs_changed == 'false'
+    steps:
+      - shell: pwsh
+        run: echo "Ran Conditional Job"
