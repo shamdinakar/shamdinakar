@@ -1,6 +1,6 @@
 name: conditional job
 on:
-  push:
+  pull_request:
 
 jobs:
   conditional_job_check_files:
@@ -16,7 +16,8 @@ jobs:
       - shell: pwsh
         id: check_file_changed
         run: |
-          $Diff = git diff --name-only main...DX-491-PR-Workflow | grep -v '.github/*'  
+          $Branch = git branch --show-current
+          $Diff = git diff --name-only main...$Branch | grep -v '.github/*'  
           $HasChanges = $Diff.Length -gt 0
           # Set the output named "docs_changed"
           echo "::set-output name=changes::$HasChanges"
