@@ -17,10 +17,11 @@ jobs:
         id: check_file_changed
         run: |
           $branch = git branch --show-current >> $GITHUB_ENV \
-          $diff = git diff main...$branch | grep -v '.github/*' >> $GITHUB_ENV \
-          $hasChanges = $diff.Length -gt 0 >> $GITHUB_ENV
+          echo "$branch"
+          # $diff = git diff main...$branch | grep -v '.github/*' >> $GITHUB_ENV \
+          # $hasChanges = $diff.Length -gt 0 >> $GITHUB_ENV
           # Set the output named "docs_changed"
-          echo "::set-output name=changes::$hasChanges"
+          # echo "::set-output name=changes::$hasChanges"
   # Run the job only with "docs_changed" equals "True"
   conditional_job:
     runs-on: 'ubuntu-20.04'
