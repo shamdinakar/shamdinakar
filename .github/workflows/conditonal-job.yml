@@ -12,16 +12,14 @@ jobs:
       - uses: actions/checkout@v2
         with:
           # Checkout as many commits as needed for the diff
-          fetch-depth: 2
+          fetch-depth: 0
       - shell: pwsh
         id: check_file_changed
         run: |
-          $branch = git branch --show-current >> $GITHUB_ENV \
-          echo "Branch : $branch"
-          # $diff = git diff main...$branch | grep -v '.github/*' >> $GITHUB_ENV \
-          # $hasChanges = $diff.Length -gt 0 >> $GITHUB_ENV
+          $diff = git diff --name-only origin/main origin/dev | grep -v '.github/*' >> $GITHUB_ENV \
+          $hasChanges = $diff.Length -gt 0 >> $GITHUB_ENV
           # Set the output named "docs_changed"
-          # echo "::set-output name=changes::$hasChanges"
+          echo "::set-output name=changes::$hasChanges"
   # Run the job only with "docs_changed" equals "True"
   conditional_job:
     runs-on: 'ubuntu-20.04'
