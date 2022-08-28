@@ -7,25 +7,26 @@ jobs:
     runs-on: 'ubuntu-latest'
     # Declare outputs for next jobs
     outputs:
-      docs_changed: ${{ steps.check_file_changed.outputs.docs_changed }}
+      docs_changed: ${{ steps.check_file_changed.outputs.changes }}
     steps:
       - uses: actions/checkout@v2
         with:
           # Checkout as many commits as needed for the diff
-          fetch-depth: 2
+          fetch-depth: 0
       - shell: pwsh
         id: check_file_changed
         run: |
-          $Branch = git branch --show-current
-          $Diff = git diff --name-only main...dev | grep -v '.github/*'  
-          $HasChanges = $Diff.Length -gt 0
+          $diff = git diff --name-only origin/main origin/dev | grep -v '^.github/workflows'
+          echo $diff
+          $hasChanges = $diff.length -gt 0
+          echo $hasChanges
           # Set the output named "docs_changed"
-          echo "::set-output name=changes::$HasChanges"
+          echo "::set-output name=changes::$hasChanges"
   # Run the job only with "docs_changed" equals "True"
   conditional_job:
     runs-on: 'ubuntu-20.04'
     needs: [conditional_job_check_files]
-    if: needs.conditional_job_check_files.outputs.docs_changed == 'false'
+    if: needs.conditional_job_check_files.outputs.docs_changed == 'true'
     steps:
       - shell: pwsh
         run: echo "Ran Conditional Job"
