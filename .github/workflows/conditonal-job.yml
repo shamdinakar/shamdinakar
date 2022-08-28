@@ -7,7 +7,7 @@ jobs:
     runs-on: 'ubuntu-latest'
     # Declare outputs for next jobs
     outputs:
-      docs_changed: ${{ steps.check_file_changed.outputs.docs_changed }}
+      docs_changed: ${{ steps.check_file_changed.outputs.changes }}
     steps:
       - uses: actions/checkout@v2
         with:
@@ -26,7 +26,7 @@ jobs:
   conditional_job:
     runs-on: 'ubuntu-20.04'
     needs: [conditional_job_check_files]
-    if: needs.conditional_job_check_files.output.changes == 'True'
+    if: needs.conditional_job_check_files.outputs.docs_changed == 'true'
     steps:
       - shell: pwsh
         run: echo "Ran Conditional Job"
