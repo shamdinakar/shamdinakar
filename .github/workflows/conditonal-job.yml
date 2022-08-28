@@ -16,10 +16,11 @@ jobs:
       - shell: pwsh
         id: check_file_changed
         run: |
-          $diff = git diff --name-only origin/main origin/dev | grep -v '.github/*' >> $GITHUB_ENV \
-          $hasChanges = $diff.Length -gt 0 >> $GITHUB_ENV
+          $diff = git diff --name-only origin/main origin/dev
+          echo $diff
+          # $hasChanges = $diff.Length -gt 0
           # Set the output named "docs_changed"
-          echo "::set-output name=changes::$hasChanges"
+          # echo "::set-output name=changes::$hasChanges"
   # Run the job only with "docs_changed" equals "True"
   conditional_job:
     runs-on: 'ubuntu-20.04'
