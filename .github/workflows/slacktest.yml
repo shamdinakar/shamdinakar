@@ -21,6 +21,7 @@ jobs:
         with:
           token: ${{ secrets.SLACK_MANUAL_DEPLOY_URL }}
           path: ${{ steps.filename.outputs.filename }}
+          channel: git-test
       - name: Upload math result for job 2
         if: always()
         uses: actions/upload-artifact@v3
