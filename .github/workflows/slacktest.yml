@@ -1,5 +1,6 @@
 on:
   workflow_dispatch:
+name: Artifact test  
 jobs:
   test:
     runs-on: ubuntu-latest
