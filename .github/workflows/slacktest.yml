@@ -16,11 +16,13 @@ jobs:
         run: |
           echo "${{ github.event.inputs.sha }} was deployed to ${{ matrix.environment}}-${{ matrix.tenenat }}" >> ${{ steps.filename.outputs.filename }}
       - name: Upload to slack step
+        if: always()
         uses: adrey/slack-file-upload-action@master
         with:
           token: ${{ secrets.SLACK_MANUAL_DEPLOY_URL }}
           path: ${{ steps.filename.outputs.filename }}
       - name: Upload math result for job 2
+        if: always()
         uses: actions/upload-artifact@v3
         with:
           name: days-deploy
