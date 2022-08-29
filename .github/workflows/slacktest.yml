@@ -1,0 +1,26 @@
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    - name: Set Filename
+      id: filename
+      run: echo "::set-output name=filename::$(date +'%Y-%m-%d').txt"
+    - name: Download deploy log artififact
+      uses: actions/download-artifact@v3
+      with:
+        name: days-deploy
+    - name: Add Deploy notification
+      if: always()
+      run: |
+        echo "${{ github.event.inputs.sha }} was deployed to ${{ matrix.environment}}-${{ matrix.tenenat }}" >> ${{ steps.filename.outputs.filename }}
+    - name: Upload to slack step
+      uses: adrey/slack-file-upload-action@master
+      with:
+        token: ${{ secrets.SLACK_MANUAL_DEPLOY_URL }}
+        path: ${{ steps.filename.outputs.filename }}
+    - name: Upload math result for job 2
+      uses: actions/upload-artifact@v3
+      with:
+        name: days-deploy
+        path: ${{ steps.filename.outputs.filename }}
+        retention-days: 1
